@@ -1,12 +1,11 @@
 require("dotenv").config();
 const port = process.env.port;
-
 const sequelize = require("./db");
-
-const { mon} = require("./model");
+const { USD,AED, KRW,KZT,JPY,RUB, EURO,CHF, TRY,ZAR } = require("./model");
+const {writeToDb} = require("./write")
 
 sequelize.authenticate();
-sequelize.sync({alter: false});
+sequelize.sync({alter: true});
 
 fetch('https://www.cbr-xml-daily.ru/daily_json.js').then(async(result) => {
   // результат запроса
@@ -16,15 +15,34 @@ fetch('https://www.cbr-xml-daily.ru/daily_json.js').then(async(result) => {
     }
 }).then((JSON_DATA) => {
   // вывод данных
-  //console.log('Список получен: ', JSON_DATA.Valute.USD.Name);
-  const write = async () =>{
-  await mon.create({
-    name: JSON_DATA.Valute.USD.Name, 
-    cost: JSON_DATA.Valute.USD.Value, 
-    eCost: JSON_DATA.Valute.USD.Value, 
-    date: JSON_DATA.Valute.USD.Date,
-  },{fields: ['name','cost','eCost','date']});
-  }
+  writeToDb(
+      USD,
+      JSON_DATA.Valute.USD.Name, 
+      JSON_DATA.Valute.USD.Value, 
+      JSON_DATA.Valute.USD.Value, 
+      JSON_DATA.Valute.USD.Date
+    );
+  writeToDb(
+      RUB,
+      JSON_DATA.Valute.RUB.Name, 
+      JSON_DATA.Valute.RUB.Value, 
+      JSON_DATA.Valute.RUB.Value, 
+      JSON_DATA.Valute.RUB.Date
+    );
+  writeToDb(
+      EURO,
+      JSON_DATA.Valute.EUR.Name, 
+      JSON_DATA.Valute.EUR.Value, 
+      JSON_DATA.Valute.EUR.Value, 
+      JSON_DATA.Valute.EUR.Date
+    );
+  writeToDb(
+      AED,
+      JSON_DATA.Valute.AED.Name, 
+      JSON_DATA.Valute.AED.Value, 
+      JSON_DATA.Valute.AED.Value, 
+      JSON_DATA.Valute.AED.Date
+    );
 
 }).catch((error) => {
   // обработка ошибок
