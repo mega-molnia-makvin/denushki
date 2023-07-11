@@ -1,6 +1,5 @@
 const { USD,
     EURO,
-    RUB,
     ZAR,
     KRW,
     KZT,
@@ -10,12 +9,11 @@ const { USD,
     AED} = require("./model");
 
 class Write{
-    async writeToDb(table, name, cost, eCost, date) {
+    async writeToDb(JSON_DATA, table, EUR) {
     await table.create({
-      name: name,
-      cost: cost, 
-      eCost: eCost, 
-      date: date,
+      name: JSON_DATA.Name,
+      cost: JSON_DATA.Value,
+      eCost: EUR/JSON_DATA.Value, 
     },{fields: ['name','cost','eCost','date']});
     }}
 
